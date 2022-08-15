@@ -55,15 +55,28 @@
                         <td>{{ ++$i }}</td>
                         <td>{{ $role->name }}</td>
                         <td>
-                            <a class="btn btn-info" href="{{ route('roles.show',$role->id) }}">Show</a>
-                            @can('role-edit')
-                            <a class="btn btn-primary" href="{{ route('roles.edit',$role->id) }}">Edit</a>
-                            @endcan
-                            @can('role-delete')
-                            {!! Form::open(['method' => 'DELETE','route' => ['roles.destroy', $role->id],'style'=>'display:inline']) !!}
-                            {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
-                            {!! Form::close() !!}
-                            @endcan
+                            <div class="btn-group">
+
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown">Action
+                                    </button>
+                                    <div class="dropdown-menu">
+
+                                        <a class="dropdown-item" href="{{ route('roles.show',$role->id) }}"><i class="fa fa-fw fa-eye mr-2"></i>View</a>
+                                        <hr>
+                                        @can('role-edit')
+                                        <a class="dropdown-item" href="{{ route('roles.edit',$role->id) }}"> <i class="fa fa-fw fa-edit mr-2"></i>Edit</a>
+                                        <hr>
+                                        @endcan
+                                        @can('role-delete')
+                                        {!! Form::open(['method' => 'DELETE','route' => ['roles.destroy', $role->id],'style'=>'display:inline']) !!}
+                                        <i class="fa fa-fw fa-trash ml-3"></i>
+                                        {!! Form::submit('Delete', ['class' => 'btn btn-dangers']) !!}
+                                        {!! Form::close() !!}
+                                        @endcan
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     @endforeach
