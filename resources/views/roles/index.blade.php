@@ -46,7 +46,7 @@
                     <tr>
                         <th>No</th>
                         <th>Name</th>
-                        <th width="280px">Action</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
