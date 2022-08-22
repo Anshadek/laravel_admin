@@ -40,7 +40,7 @@
 
   <div class="card">
     <div class="card-header">
-      <h3 class="card-title">Role Management List</h3>
+      <h3 class="card-title">User Management List</h3>
     </div>
     <!-- /.card-header -->
     <div class="card-body">
@@ -50,56 +50,12 @@
             <th>No</th>
             <th>Name</th>
             <th>Email</th>
-            <th>Roles</th>
+             <th>Roles</th> 
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-        @foreach ($data as $key => $user)
-          <tr>
-    <td>{{ ++$i }}</td>
-    <td>{{ $user->name }}</td>
-    <td>{{ $user->email }}</td>
-    <td>
-      @if(!empty($user->getRoleNames()))
-      @foreach($user->getRoleNames() as $v)
-      <label class="badge badge-success">{{ $v }}</label>
-      @endforeach
-      @endif
-    </td>
-    <td>
-                            <div class="btn-group">
-
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown">Action
-                                    </button>
-                                    <div class="dropdown-menu">
-
-                                        <a class="dropdown-item" href="{{ route('users.show',$user->id) }}"><i class="fa fa-fw fa-eye mr-2"></i>View</a>
-                                        <hr>
-                                        <?php /* 
-                                        @can('user-edit')
-                                        */?>
-                                        <a class="dropdown-item" href="{{ route('users.edit',$user->id) }}"> <i class="fa fa-fw fa-edit mr-2"></i>Edit</a>
-                                        <hr>
-                                        <?php /* 
-                                        @endcan
-                                        @can('user-delete')
-                                        */?>
-                                        {!! Form::open(['method' => 'DELETE','route' => ['users.destroy', $user->id],'style'=>'display:inline']) !!}
-                                        <i class="fa fa-fw fa-trash ml-3"></i>
-                                        {!! Form::submit('Delete', ['class' => 'btn btn-dangers']) !!}
-                                        {!! Form::close() !!}
-                                        <?php /*
-                                        @endcan
-                                        */?>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-  
-  </tr>
-          @endforeach
+        
         </tbody>
 
       </table>
@@ -123,21 +79,27 @@
 @include('admin.layouts.dataTableScripts')
 <script>
     $(function() {
-        $("#example1").DataTable({
-            "responsive": true,
-            "lengthChange": false,
-            "autoWidth": false,
-            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-        $('#example2').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-        });
+    var table = $('.table-striped').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('users.index') }}",
+        columns: [
+            {data: 'id', name: 'id'},
+            {data: 'name', name: 'name'},
+            {data: 'email', name: 'email'},
+           // {data: 'roles', name: 'roles'},
+            {data: 'roles', name: 'roles', orderable: false, searchable: false},
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+        ]
+        
+    });
+
+    // $("#example1").DataTable({
+            // "responsive": true,
+            // "lengthChange": false,
+            // "autoWidth": false,
+            // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        // }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     });
 </script>
 @endsection

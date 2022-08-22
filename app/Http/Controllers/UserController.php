@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Role;
 use DB;
 use Hash;
 use Illuminate\Support\Arr;
+use DataTables;
     
 class UserController extends Controller
 {
@@ -19,9 +20,60 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $data = User::orderBy('id','DESC')->paginate(5);
-        return view('users.index',compact('data'))
-            ->with('i', ($request->input('page', 1) - 1) * 5);
+        if ($request->ajax()) {
+            $data = User::select('*');
+            return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+     
+                           $btn = '<div class="btn-group">
+                           <div class="btn-group">
+                               <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown">Action
+                               </button>
+                               <div class="dropdown-menu">
+                                   <a class="dropdown-item" href="'.route('users.show',$row->id).'"><i class="fa fa-fw fa-eye mr-2"></i>View</a>
+                                   <hr>
+                                   <?php /* 
+                                   @can("user-edit")
+                                   */?>
+                                   <a class="dropdown-item" href="'.route('users.edit',$row->id).'"> <i class="fa fa-fw fa-edit mr-2"></i>Edit</a>
+                                   <hr>
+                                   <?php /* 
+                                   @endcan
+                                   @can("user-delete")
+                                   */?>
+                                   <form action="'.route('users.destroy',$row->id).'"  method ="delete">
+                                   <i class="fa fa-fw fa-trash ml-3"></i>
+                                   <button type="submit" class="btn btn-dangers">Delete</button>
+                                   </form>
+                                   <?php /*
+                                   @endcan
+                                   */?>
+                               </div>
+                           </div>
+                       </div>';
+    
+                            return $btn;
+                    })
+                    
+                    ->addColumn('roles', function($row){
+                    
+                        $text = "";
+                          if(!empty($row->getRoleNames())){
+                        foreach($row->getRoleNames() as $v) {
+                            $text .= '<label class="badge badge-success">'.$v.'</label>';
+                        }
+                        }
+                        return $text;
+                    })
+                    ->rawColumns(['action','roles'])
+                    ->make(true);
+        }
+        
+
+       
+        return view('users.index');
+           
     }
     
     /**
